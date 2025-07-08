@@ -1,0 +1,71 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.4'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.cj'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        // 사용 중인 Spring Boot 버전에 맞는 Spring Cloud 버전 선택
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.2"
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // JWT Token 의존성 파일
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+    // REDIS
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    // MYSQL
+    implementation("mysql:mysql-connector-java:8.0.33")
+    // JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // spring Cloud
+    implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // bcrypt
+    implementation 'at.favre.lib:bcrypt:0.9.0'
+
+    // docker compose
+    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+    testAndDevelopmentOnly("org.springframework.boot:spring-boot-docker-compose")
+
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+
+
+    //Feign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
+
+    //MySQL
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
