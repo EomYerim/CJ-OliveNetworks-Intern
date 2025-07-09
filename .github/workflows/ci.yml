@@ -6,8 +6,8 @@ on:
 
 env:
   # ECR 레지스트리 주소와 리포지토리 이름을 변수로 설정
-  ECR_REGISTRY: [051826731133.dkr.ecr.ap-northeast-2.amazonaws.com/cjone-dev]
-  ECR_REPOSITORY: [cjone-dev]
+  ECR_REGISTRY: 051826731133.dkr.ecr.ap-northeast-2.amazonaws.com/cjone-dev
+  ECR_REPOSITORY: cjone-dev
 
 jobs:
   build-and-push:
