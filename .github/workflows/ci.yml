@@ -45,10 +45,9 @@ jobs:
         run: ./gradlew build
 
       # 6. Docker 이미지 빌드 및 ECR에 푸시
+
       - name: Build and push Docker image
-        env:
-          # 이미지 태그를 Git 커밋 해시의 앞 7자리로 지정합니다.
-          IMAGE_TAG: ${{ substr(github.sha, 0, 7) }}
         run: |
+          IMAGE_TAG=$(echo "${GITHUB_SHA::7}")
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
