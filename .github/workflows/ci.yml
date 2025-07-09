@@ -54,8 +54,8 @@ jobs:
 #      - name: Build with Gradle
 #        run: ./gradlew build
 
-      # 7. Docker 이미지 빌드 및 ECR에 푸시
-
+      # 7. Docker 이미지 빌드 및 ECR에 푸시 -> 이미지 태그 기반
+          
       - name: Build and push Docker image
         run: |
           IMAGE_TAG=$(echo "${GITHUB_SHA::7}")
