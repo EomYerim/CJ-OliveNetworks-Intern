@@ -1,25 +1,26 @@
-#spring:
-#  profiles:
-#    active: dev
-
 spring:
   jpa:
     hibernate:
       ddl-auto: create
-  docker:
-    compose:
-      enabled: true
-      file: ./docker/docker-compose.yml
-      lifecycle-management: start-only
+    # 💡 이 부분이 수정되었습니다.
+    # properties는 jpa 아래에 위치해야 합니다.
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
   datasource:
+    # 💡 driver-class-name과 dialect는 서로 다른 경로에 있습니다.
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://cjone-dev-db.c5syk8q4mlad.ap-northeast-2.rds.amazonaws.com:5432/cjone-dev-db
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+
   data:
     redis:
       host: cjone-dev-redis-master.default.svc.cluster.local
       port: 6379
+
+# 이하 JWT 설정은 그대로 유지
 jwt:
   access-token-expiration: 10800
   secret: 5FwsE49eeFcoKguHGRSCOuo0WcOPVU++yav+yCDMfBM=
