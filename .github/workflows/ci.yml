@@ -20,7 +20,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # 2. AWS 자격 증명 설정
+
+        # 2. AWS 자격 증명 설정
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -40,11 +41,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # 5. Gradle로 빌드
+
+        # 5. Gradle 빌드 권한
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+
+        # 6. Gradle로 빌드
       - name: Build with Gradle
         run: ./gradlew build
 
-      # 6. Docker 이미지 빌드 및 ECR에 푸시
+      # 7. Docker 이미지 빌드 및 ECR에 푸시
 
       - name: Build and push Docker image
         run: |
