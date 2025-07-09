@@ -1,63 +1,66 @@
-name: Spring Boot CI to ECR
+name: Spring Boot CI/CD to ECR and EKS
 
 on:
   push:
     branches: [ "develop" ]
 
 env:
-  # ECR 레지스트리 주소와 리포지토리 이름을 변수로 설정
   ECR_REGISTRY: 051826731133.dkr.ecr.ap-northeast-2.amazonaws.com
   ECR_REPOSITORY: cjone-dev
+  AWS_REGION: ap-northeast-2
+  EKS_CLUSTER_NAME: cjone-dev-cluster
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: read
 
     steps:
-      # 1. 소스 코드 체크아웃
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-
-        # 2. AWS 자격 증명 설정
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+          aws-region: ${{ env.AWS_REGION }}
 
-      # 3. Amazon ECR에 로그인
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
-      # 4. JDK 17 설정
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
+          # 💡 [속도 개선] Gradle 종속성을 캐싱하여 빌드 속도를 향상시킵니다.
+          cache: 'gradle'
 
-
-        # 5. Gradle 빌드 권한
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-
-      - name: Build without tests
+      - name: Build with Gradle
         run: ./gradlew build -x test
 
-#        # 6. Gradle로 빌드
-#      - name: Build with Gradle
-#        run: ./gradlew build
+      # 💡 이미지 태그를 생성하고, 다음 스텝에서 사용할 수 있도록 GITHUB_OUTPUT에 저장합니다.
+      - name: Define Image Tag
+        id: image_tag_generator
+        run: echo "tag=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
-      # 7. Docker 이미지 빌드 및 ECR에 푸시 -> 이미지 태그 기반
-          
       - name: Build and push Docker image
         run: |
-          IMAGE_TAG=$(echo "${GITHUB_SHA::7}")
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker build -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ steps.image_tag_generator.outputs.tag }} .
+          docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ steps.image_tag_generator.outputs.tag }}
+
+      - name: Set Kubeconfig
+        run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.EKS_CLUSTER_NAME }}
+
+
+      - name: Deploy to Kubernetes
+        env:
+          IMAGE_TAG: ${{ steps.image_tag_generator.outputs.tag }}
+        run: |
+          envsubst < k8s/deployment.yaml | kubectl apply -f -
