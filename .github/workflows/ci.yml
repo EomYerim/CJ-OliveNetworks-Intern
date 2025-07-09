@@ -1,3 +1,5 @@
+# .github/workflows/main.yml
+
 name: Spring Boot CI/CD to ECR and EKS
 
 on:
@@ -17,7 +19,7 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout
+      - name: Checkout application repository
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -36,7 +38,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          # 💡 [속도 개선] Gradle 종속성을 캐싱하여 빌드 속도를 향상시킵니다.
           cache: 'gradle'
 
       - name: Grant execute permission for gradlew
@@ -45,7 +46,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test
 
-      # 💡 이미지 태그를 생성하고, 다음 스텝에서 사용할 수 있도록 GITHUB_OUTPUT에 저장합니다.
+
       - name: Define Image Tag
         id: image_tag_generator
         run: echo "tag=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
@@ -58,9 +59,16 @@ jobs:
       - name: Set Kubeconfig
         run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.EKS_CLUSTER_NAME }}
 
+      # 💡 [추가] Kubernetes 매니페스트 파일이 있는 별도의 리포지토리를 체크아웃합니다.
+      - name: Checkout K8s manifests repository
+        uses: actions/checkout@v4
+        with:
+          repository: EomYerim/CJONE-k8s-manifests
+          path: k8s-manifests # 'k8s-manifests' 라는 디렉토리에 코드를 받습니다.
+
 
       - name: Deploy to Kubernetes
         env:
           IMAGE_TAG: ${{ steps.image_tag_generator.outputs.tag }}
         run: |
-          envsubst < k8s/deployment.yaml | kubectl apply -f -
+          envsubst < k8s-manifests/deployment.yaml | kubectl apply -f -
