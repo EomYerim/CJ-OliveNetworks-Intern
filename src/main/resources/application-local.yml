@@ -8,6 +8,7 @@ spring:
       file: ./docker/docker-compose.yml
       lifecycle-management: start-only
   datasource:
+    driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/cj
     username: root
     password: root
