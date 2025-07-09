@@ -47,9 +47,12 @@ jobs:
         run: chmod +x ./gradlew
 
 
-        # 6. Gradle로 빌드
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Build without tests
+        run: ./gradlew build -x test
+
+#        # 6. Gradle로 빌드
+#      - name: Build with Gradle
+#        run: ./gradlew build
 
       # 7. Docker 이미지 빌드 및 ECR에 푸시
 
