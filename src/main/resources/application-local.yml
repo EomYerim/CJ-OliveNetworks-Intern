@@ -8,10 +8,14 @@ spring:
       file: ./docker/docker-compose.yml
       lifecycle-management: start-only
   datasource:
-    url: jdbc:mysql://localhost:3306/cj
+    url: jdbc:postgresql://localhost:5432/cj
     username: root
     password: root
   data:
     redis:
       host: localhost
       port: 6379
+
+jwt:
+  access-token-expiration: 10800
+  secret: 5FwsE49eeFcoKguHGRSCOuo0WcOPVU++yav+yCDMfBM=

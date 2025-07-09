@@ -62,7 +62,10 @@ dependencies {
 
     //MySQL
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    runtimeOnly 'com.mysql:mysql-connector-j'
+//    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    //PostgreSQL
+    runtimeOnly 'org.postgresql:postgresql'
 
 }
 
