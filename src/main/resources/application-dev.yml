@@ -16,9 +16,9 @@ spring:
 
   data:
     redis:
-      host: cjone-dev-redis-master.default.svc.cluster.local
+      host: clustercfg.cjone-dev-redis-cache.fpxtkj.apn2.cache.amazonaws.com
       port: 6379
-      password: ${REDIS_PASSWORD}
+#      password: ${REDIS_PASSWORD}
 
 jwt:
   access-token-expiration: 10800
