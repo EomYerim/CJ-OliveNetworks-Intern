@@ -16,7 +16,7 @@ spring:
 
   data:
     redis:
-      host: cjone-redis-cache-fpxtkj.serverless.apn2.cache.amazonaws.com:6379
+      host: cjone-redis-cache-fpxtkj.serverless.apn2.cache.amazonaws.com
       port: 6379
       password: ${REDIS_PASSWORD}
       # 💡 [추가] 전송 중 암호화를 활성화했으므로 SSL/TLS 설정을 추가
