@@ -18,7 +18,11 @@ spring:
     redis:
       host: clustercfg.cjone-dev-redis-cache.fpxtkj.apn2.cache.amazonaws.com
       port: 6379
-#      password: ${REDIS_PASSWORD}
+      password: ${REDIS_PASSWORD}
+      # 💡 [추가] 전송 중 암호화를 활성화했으므로 SSL/TLS 설정을 추가
+      ssl:
+        enabled: true
+
 
 jwt:
   access-token-expiration: 10800
