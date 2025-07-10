@@ -18,6 +18,7 @@ spring:
     redis:
       host: cjone-dev-redis-master.default.svc.cluster.local
       port: 6379
+      password: ${REDIS_PASSWORD}
 
 jwt:
   access-token-expiration: 10800
