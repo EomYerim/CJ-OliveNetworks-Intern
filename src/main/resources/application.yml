@@ -22,8 +22,8 @@ spring:
 #      username: yerim159
 #      password: ${REDIS_PASSWORD}
 #      # 💡 [추가] 전송 중 암호화를 활성화했으므로 SSL/TLS 설정을 추가
-#      ssl:
-#        enabled: true
+      ssl:
+        enabled: true
 
 # 이하 JWT 설정은 그대로 유지
 jwt:
