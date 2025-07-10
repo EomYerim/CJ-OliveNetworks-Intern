@@ -67,4 +67,4 @@ jobs:
           IMAGE_TAG: ${{ steps.image_tag_generator.outputs.tag }}
         run: |
           echo "Deploying with image tag: $IMAGE_TAG"
-          envsubst '$IMAGE_TAG' < k8s/deployment.yaml | kubectl apply -f -
+          envsubst '$IMAGE_TAG' < CJONE-k8s-manifests/k8s/deployment.yaml | kubectl apply -f -
