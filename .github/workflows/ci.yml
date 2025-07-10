@@ -59,16 +59,11 @@ jobs:
       - name: Set Kubeconfig
         run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.EKS_CLUSTER_NAME }}
 
-      # 💡 [추가] Kubernetes 매니페스트 파일이 있는 별도의 리포지토리를 체크아웃합니다.
-      - name: Checkout K8s manifests repository
-        uses: actions/checkout@v4
-        with:
-          repository: EomYerim/CJONE-k8s-manifests
-          path: k8s-manifests # 'k8s-manifests' 라는 디렉토리에 코드를 받습니다.
-
+      - name: Clone manifest repo
+        run: git clone https://github.com/EomYerim/CJONE-k8s-manifests.git
 
       - name: Deploy to Kubernetes
         env:
           IMAGE_TAG: ${{ steps.image_tag_generator.outputs.tag }}
         run: |
-          envsubst < k8s-manifests/deployment.yaml | kubectl apply -f -
+          envsubst < CJONE-k8s-manifests/deployment.yaml | kubectl apply -f -
