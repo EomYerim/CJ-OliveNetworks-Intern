@@ -1,4 +1,3 @@
-# .github/workflows/main.yml
 
 name: Spring Boot CI/CD to ECR and EKS
 
@@ -46,7 +45,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test
 
-
       - name: Define Image Tag
         id: image_tag_generator
         run: echo "tag=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
@@ -59,12 +57,16 @@ jobs:
       - name: Set Kubeconfig
         run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.EKS_CLUSTER_NAME }}
 
-      - name: Clone manifest repo
-        run: git clone https://github.com/EomYerim/CJONE-k8s-manifests.git
+      # 💡 [수정] 'git clone' 대신 표준 방식인 'actions/checkout'을 사용하여 매니페스트 리포지토리를 가져옴
+      - name: Checkout K8s manifests repository
+        uses: actions/checkout@v4
+        with:
+          repository: EomYerim/CJONE-k8s-manifests
+          path: k8s-manifests # 'k8s-manifests' 라는 디렉토리에 코드를 받습니다.
 
+      # 💡 [수정] envsubst가 변수를 확실히 인식하도록 run 스크립트 내에서 변수를 export 하도록 변경
       - name: Deploy to Kubernetes
-        env:
-          IMAGE_TAG: ${{ steps.image_tag_generator.outputs.tag }}
         run: |
+          export IMAGE_TAG=${{ steps.image_tag_generator.outputs.tag }}
           echo "Deploying with image tag: $IMAGE_TAG"
-          envsubst '$IMAGE_TAG' < CJONE-k8s-manifests/k8s/deployment.yaml | kubectl apply -f -
+          envsubst '$IMAGE_TAG' < k8s-manifests/k8s/deployment.yaml | kubectl apply -f -
