@@ -17,7 +17,7 @@ spring:
 
   data:
     redis:
-      host: cjone-dev-redis-master.default.svc.cluster.local
+      host: cjone-redis-cache-fpxtkj.serverless.apn2.cache.amazonaws.com
       port: 6379
 
 # 이하 JWT 설정은 그대로 유지
