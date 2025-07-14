@@ -18,9 +18,6 @@ spring:
     redis:
       host: cjone-redis-cache-fpxtkj.serverless.apn2.cache.amazonaws.com
       port: 6379
-#      username: yerim159
-#      password: ${REDIS_PASSWORD}
-      # 💡 [추가] 전송 중 암호화를 활성화했으므로 SSL/TLS 설정을 추가
       ssl:
         enabled: true
 
@@ -28,3 +25,10 @@ spring:
 jwt:
   access-token-expiration: 10800
   secret: 5FwsE49eeFcoKguHGRSCOuo0WcOPVU++yav+yCDMfBM=
+
+
+logging:
+  file:
+    name: /logs/app.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n" # 로깅 파일 추가
