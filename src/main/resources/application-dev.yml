@@ -28,7 +28,12 @@ jwt:
 
 
 logging:
-  file:
-    name: /logs/app.log
+  level:
+    root: INFO
+    com.yourpackage: DEBUG
   pattern:
-    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n" # 로깅 파일 추가
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] - %msg%n"
+  file:
+    name: /app/logs/application.log
+    max-size: 10MB
+    max-history: 30
