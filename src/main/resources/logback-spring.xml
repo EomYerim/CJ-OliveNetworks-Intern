@@ -1,4 +1,4 @@
-<configuration>
+<!-- <configuration>
     <appender name="OPENSEARCH" class="com.internetitem.logback.elasticsearch.ElasticsearchAppender">
         <url>https://vpc-cjone-opensearch-dev-grk7lpau2thnvx43tuz5ptzrn4.ap-northeast-2.es.amazonaws.com/_bulk</url>
         <index>application-logs-%date{yyyy-MM-dd}</index>
@@ -12,5 +12,30 @@
 
     <root level="INFO">
         <appender-ref ref="OPENSEARCH"/>
+    </root>
+</configuration>
+ -->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 콘솔 출력 (JSON 형태) -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <pattern>yyyy-MM-dd HH:mm:ss.SSS</pattern>
+                </timestamp>
+                <logLevel/>
+                <loggerName/>
+                <message/>
+                <mdc/>
+                <arguments/>
+                <stackTrace/>
+            </providers>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
