@@ -35,7 +35,7 @@
     </appender>
 
     <!-- 패키지별 로그 레벨 설정 -->
-    <logger name="com.yourpackage" level="DEBUG"/>
+    <logger name="com.cj.cjone" level="DEBUG"/>
     <logger name="org.springframework" level="INFO"/>
     <logger name="org.hibernate" level="WARN"/>
 
