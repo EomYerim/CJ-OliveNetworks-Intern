@@ -33,13 +33,13 @@ jwt:
   access-token-expiration: 10800
   secret: 5FwsE49eeFcoKguHGRSCOuo0WcOPVU++yav+yCDMfBM=
 
-logging:
-  level:
-    root: INFO
-    com.yourpackage: DEBUG
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] - %msg%n"
-  file:
-    name: /app/logs/application.log
-    max-size: 10MB
-    max-history: 30
+#logging:
+#  level:
+#    root: INFO
+#    com.yourpackage: DEBUG
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] - %msg%n"
+#  file:
+#    name: /app/logs/application.log
+#    max-size: 10MB
+#    max-history: 30
