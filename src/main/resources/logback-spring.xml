@@ -10,7 +10,7 @@
 
     <!-- Logstash with error handling -->
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>43.202.157.62:5000</destination>
+        <destination>43.203.36.202:5000</destination>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <customFields>{"appname":"cjone-app", "environment":"dev"}</customFields>
             <includeContext>true</includeContext>
