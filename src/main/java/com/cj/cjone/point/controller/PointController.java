@@ -32,6 +32,7 @@ public class PointController {
 		return ResponseEntity.ok(response);
 	}
 
+	@CrossOrigin(origins = "*")
 	@PostMapping("/ai")
 	public ResponseEntity<Void> triggerErrorApi(@RequestBody AiPointRequest request) {
 		log.info("API endpoint hit: /ai with body = {}", request);
