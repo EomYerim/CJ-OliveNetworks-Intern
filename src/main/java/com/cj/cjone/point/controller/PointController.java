@@ -1,5 +1,6 @@
 package com.cj.cjone.point.controller;
 
+import com.cj.cjone.ai.service.dto.AiPointRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,11 +32,10 @@ public class PointController {
 		return ResponseEntity.ok(response);
 	}
 
-	@PostMapping("/ai/{userId}/{basePoints}")
-	public ResponseEntity<Void> triggerErrorApi(@PathVariable String userId,
-												@PathVariable int basePoints) {
-		log.info("API endpoint hit: /ai/{}/{}", userId, basePoints);
-		pointService.addPointsWithGradeMultiplier(userId, basePoints);
+	@PostMapping("/ai")
+	public ResponseEntity<Void> triggerErrorApi(@RequestBody AiPointRequest request) {
+		log.info("API endpoint hit: /ai with body = {}", request);
+		pointService.addPointsWithGradeMultiplier(request.getUserId(), request.getBasePoints());
 		return ResponseEntity.ok().build();
 	}
 }
