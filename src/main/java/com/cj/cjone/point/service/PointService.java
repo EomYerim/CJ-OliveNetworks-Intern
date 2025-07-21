@@ -27,7 +27,7 @@ public class PointService {
 			String gradeName = grade.getGradeName(); // → NullPointerException 발생
 
 		} catch (NullPointerException e) {
-			log.error("💥 NullPointerException 발생 : {}", userId, e);
+			log.error("💥 ErrorCode: NULL_GRADE_OBJECT - NullPointerException 발생 : {}", userId, e);
 			// throw e; // 이 줄을 주석 처리하면 예외가 전파되지 않음
 
 			// 또는 테스트 완료 로그 추가
