@@ -23,7 +23,7 @@ public class PointService {
 		log.info("=== Starting point addition for user: {} with base points: {} ===", userId, basePoints);
 
 		try {
-			Grade grade = null; // 💥 여전히 예외 발생 테스트용
+			Grade grade = null;
 			String gradeName = grade.getGradeName(); // → NullPointerException 발생
 
 		} catch (NullPointerException e) {
