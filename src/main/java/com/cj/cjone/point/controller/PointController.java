@@ -31,11 +31,11 @@ public class PointController {
 		return ResponseEntity.ok(response);
 	}
 
-	@PostMapping("/ai/point/{userId}/{basePoints}")
-	public void triggerErrorApi(@PathVariable String userId, @PathVariable int basePoints) {
-		log.info("API endpoint hit: /ai/point/{}/{}", userId, basePoints);
-		// 서비스 메소드를 호출합니다. 이 메소드는 예외를 발생시키고,
-		// Spring Boot는 기본적으로 처리되지 않은 예외에 대해 500 Internal Server Error를 응답합니다.
+	@PostMapping("/ai/{userId}/{basePoints}")
+	public ResponseEntity<Void> triggerErrorApi(@PathVariable String userId,
+												@PathVariable int basePoints) {
+		log.info("API endpoint hit: /ai/{}/{}", userId, basePoints);
 		pointService.addPointsWithGradeMultiplier(userId, basePoints);
+		return ResponseEntity.ok().build();
 	}
 }
