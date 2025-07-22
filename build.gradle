@@ -29,18 +29,24 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // JWT Token 의존성 파일
+    // JWT Token
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
-    // REDIS
+
+    // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    // MYSQL
-    implementation("mysql:mysql-connector-java:8.0.33")
+
     // JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    // spring Cloud
+
+    // PostgreSQL (runtimeOnly로 하나만 남김)
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // Spring Cloud (OpenFeign이 loadbalancer를 포함할 수 있으나 명시적으로 하나만 유지)
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
+
     // lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -50,11 +56,15 @@ dependencies {
 
     // docker compose
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
-    testAndDevelopmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
     // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 
+    // log
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+
+
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
     //Feign
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
@@ -63,12 +73,11 @@ dependencies {
     //MySQL
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     runtimeOnly 'com.mysql:mysql-connector-j'
-//
+    
 //    implementation 'com.internetitem:logback-elasticsearch-appender:1.6'
 
     // logstash
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
-
 
 }
 

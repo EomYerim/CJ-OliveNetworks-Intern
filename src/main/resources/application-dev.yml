@@ -5,16 +5,15 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    # 💡 이 부분이 수정되었습니다.
-    # properties는 jpa 아래에 위치해야 합니다.
+
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   datasource:
-    # 💡 driver-class-name과 dialect는 서로 다른 경로에 있습니다.
+
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://cjone-dev-db.c5syk8q4mlad.ap-northeast-2.rds.amazonaws.com:5432/cjone-dev-db
+    url: jdbc:postgresql://cjone-dev-rds.c5syk8q4mlad.ap-northeast-2.rds.amazonaws.com:5432/cjone_dev_db
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
@@ -22,24 +21,22 @@ spring:
     redis:
       host: cjone-redis-cache-fpxtkj.serverless.apn2.cache.amazonaws.com
       port: 6379
-#      username: yerim159
-#      password: ${REDIS_PASSWORD}
-#      # 💡 [추가] 전송 중 암호화를 활성화했으므로 SSL/TLS 설정을 추가
       ssl:
         enabled: true
 
-# 이하 JWT 설정은 그대로 유지
+
 jwt:
   access-token-expiration: 10800
   secret: 5FwsE49eeFcoKguHGRSCOuo0WcOPVU++yav+yCDMfBM=
 
+#
 #logging:
 #  level:
 #    root: INFO
 #    com.yourpackage: DEBUG
 #  pattern:
 #    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] - %msg%n"
-#  file:
-#    name: /app/logs/application.log
-#    max-size: 10MB
-#    max-history: 30
+  # file:
+  #   name: /app/logs/application.log
+  #   max-size: 10MB
+  #   max-history: 30

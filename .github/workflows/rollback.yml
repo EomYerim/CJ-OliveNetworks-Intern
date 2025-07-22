@@ -1,0 +1,118 @@
+name: "Rollback Workflow" 
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_commit:
+        description: 'Target commit SHA to rollback to'
+        required: true
+        type: string
+      rollback_reason:
+        description: 'Reason for rollback'
+        required: false
+        type: string
+      triggered_by:
+        description: 'Who/what triggered this rollback'
+        required: false
+        type: string
+
+env:
+  ECR_REGISTRY: 051826731133.dkr.ecr.ap-northeast-2.amazonaws.com
+  ECR_REPOSITORY: cjone-dev
+  AWS_REGION: ap-northeast-2
+  K8S_MANIFEST_REPO: EomYerim/CJONE-k8s-manifests
+  K8S_MANIFEST_PATH: k8s-manifests/k8s/deployment.yaml
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      # Step 1: Checkout to target commit
+      - name: Checkout target commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.target_commit }}
+
+      # Step 2: Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Step 3: Login to ECR
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Step 4: Set up JDK 17
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      # Step 5: Build application at target commit
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build -x test
+
+      # Step 6: Build and push rollback image
+      - name: Build and push rollback Docker image
+        id: build-rollback-image
+        run: |
+          # Use target commit SHA as rollback image tag
+          ROLLBACK_TAG="rollback-$(git rev-parse --short ${{ github.event.inputs.target_commit }})-$(date +%s)"
+          echo "Rollback image tag: $ROLLBACK_TAG"
+          
+          # Build and push rollback image
+          docker build -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:$ROLLBACK_TAG .
+          docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:$ROLLBACK_TAG
+          
+          echo "rollback_tag=$ROLLBACK_TAG" >> $GITHUB_OUTPUT
+
+      # Step 7: Update K8s manifest for rollback
+      - name: Checkout K8s manifests repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.K8S_MANIFEST_REPO }}
+          path: k8s-manifests
+          token: ${{ secrets.PAT }}
+
+      - name: Update manifest for rollback
+        run: |
+          # Update image tag to rollback version
+          sed -i 's|image:.*|image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ steps.build-rollback-image.outputs.rollback_tag }}|g' ${{ env.K8S_MANIFEST_PATH }}
+          echo "Manifest updated for rollback to commit ${{ github.event.inputs.target_commit }}"
+          cat ${{ env.K8S_MANIFEST_PATH }}
+
+      # Step 8: Commit rollback changes
+      - name: Commit and push rollback manifest
+        run: |
+          cd k8s-manifests
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          if ! git diff --staged --quiet; then
+            git commit -m "🔄 ROLLBACK: Deploy commit ${{ github.event.inputs.target_commit }} - Reason: ${{ github.event.inputs.rollback_reason }}"
+            git push
+            echo "Rollback manifest pushed successfully"
+          else
+            echo "No changes to commit for rollback"
+          fi
+
+      # Step 9: Create rollback summary
+      - name: Create rollback summary
+        run: |
+          echo "## 🔄 Rollback Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Target Commit:** ${{ github.event.inputs.target_commit }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Rollback Image:** ${{ steps.build-rollback-image.outputs.rollback_tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Reason:** ${{ github.event.inputs.rollback_reason }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered By:** ${{ github.event.inputs.triggered_by }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Rollback Time:** $(date)" >> $GITHUB_STEP_SUMMARY

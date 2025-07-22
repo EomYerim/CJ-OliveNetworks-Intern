@@ -42,8 +42,6 @@ public class UserService {
             .username(request.username())
             .password(hashPassword(request.password()))
             .email(request.email())
-            .nickname(request.nickname())
-            .age(request.age())
             .build();
 
         userRepository.save(newUser);
@@ -58,7 +56,7 @@ public class UserService {
 
     @Transactional
     public TokenResponse signIn(SignInRequest request) {
-        User user = userRepository.findByUsername(request.username())
+        User user = userRepository.findByEmail(request.email())
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         if (!verifyPassword(request.password(), user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");

@@ -9,14 +9,13 @@ spring:
       lifecycle-management: start-only
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/cj
-    username: root
-    password: root
+    url: jdbc:postgresql://cjone-dev-db.c5syk8q4mlad.ap-northeast-2.rds.amazonaws.com:5432/cjone-dev-db
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   data:
     redis:
-      host: localhost
+      host: cjone-dev-redis-master.default.svc.cluster.local
       port: 6379
-
 jwt:
   access-token-expiration: 10800
-  secret: 5FwsE49eeFcoKguHGRSCOuo0WcOPVU++yav+yCDMfBM=
+  secret: 5FwsE49eeFcoKguHGRSCOuo0WcOPVU++yav+yCDMfBM=     
