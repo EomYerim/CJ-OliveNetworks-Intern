@@ -63,6 +63,20 @@ dependencies {
     // log
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
+
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+
+    //Feign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
+
+    //MySQL
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    
+//    implementation 'com.internetitem:logback-elasticsearch-appender:1.6'
+
+    // logstash
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
 }
